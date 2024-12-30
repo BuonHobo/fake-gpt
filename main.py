@@ -1,21 +1,40 @@
-prompt = """\
-What is 13-3?
-<request><SimpleCalculatorTool>13-3<call>10.0<response>
-Result=10<submit>
-"""
+# 0. imports
+import torch
+from transformers import GPT2Tokenizer
 
-def reward_fn(result, answer):
-    """Simplified reward function returning 1 if result matches answer and 0 otherwise."""
-    result_parsed = result.split("=")[1].split("<")[0]
-    return int(result_parsed==answer)
+from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
 
-text_env = TextEnvironemnt(
-    model=model, 
-    tokenizer=tokenizer,
-    tools= {"SimpleCalculatorTool": load_tool("ybelkada/simple-calculator")},
-    reward_fn=exact_match_reward,
-    prompt=prompt, 
-    max_turns=1,
-    max_tool_response=100,
-    generation_kwargs={"do_sample": "true"},
-)
+
+# 1. load a pretrained model
+model = AutoModelForCausalLMWithValueHead.from_pretrained("gpt2")
+ref_model = AutoModelForCausalLMWithValueHead.from_pretrained("gpt2")
+tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+tokenizer.pad_token = tokenizer.eos_token
+
+# 2. initialize trainer
+ppo_config = {"mini_batch_size": 1, "batch_size": 1}
+config = PPOConfig(**ppo_config)
+ppo_trainer = PPOTrainer(config, model, ref_model, tokenizer)
+
+# 3. encode a query
+query_txt = "This morning I went to the "
+query_tensor = tokenizer.encode(query_txt, return_tensors="pt").to(model.pretrained_model.device)
+
+# 4. generate model response
+generation_kwargs = {
+    "min_length": -1,
+    "top_k": 0.0,
+    "top_p": 1.0,
+    "do_sample": True,
+    "pad_token_id": tokenizer.eos_token_id,
+    "max_new_tokens": 20,
+}
+response_tensor = ppo_trainer.generate([item for item in query_tensor], return_prompt=False, **generation_kwargs)
+response_txt = tokenizer.decode(response_tensor[0])
+
+# 5. define a reward for response
+# (this could be any reward such as human feedback or output from another model)
+reward = [torch.tensor(1.0, device=model.pretrained_model.device)]
+
+# 6. train model with ppo
+train_stats = ppo_trainer.step([query_tensor[0]], [response_tensor[0]], reward)
