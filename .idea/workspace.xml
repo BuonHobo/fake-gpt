@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0070ec8a-ae7c-4e1a-8d1e-2b02d82e508b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/fake-gpt.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/fake-gpt.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
+    <list id="e252dedf-f2b3-45da-9203-0249b8e5e070" name="Changes by buonhobo" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,7 +34,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/BuonHobo/fake-gpt.git&quot;,
-    &quot;accountId&quot;: &quot;76692be3-ec05-4142-8bc4-cd6406aa93fa&quot;
+    &quot;accountId&quot;: &quot;d57fa5c0-ea07-462f-ac69-ef3d6e186948&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -46,7 +48,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;Python.main.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
@@ -58,6 +60,37 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="fake-gpt" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="PYTORCH_CUDA_ALLOC_CONF" value="expandable_segments:True" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -81,6 +114,11 @@
       <workItem from="1735660542794" duration="98000" />
       <workItem from="1735660649276" duration="2356000" />
       <workItem from="1735848777614" duration="73000" />
+      <workItem from="1735914750684" duration="6846000" />
+      <workItem from="1735921761967" duration="430000" />
+      <workItem from="1735922608403" duration="446000" />
+      <workItem from="1735923090272" duration="362000" />
+      <workItem from="1735923969879" duration="94000" />
     </task>
     <task id="LOCAL-00001" summary="Add project setup files and initial calculator script&#10;&#10;This commit includes IntelliJ IDEA configuration files, dependency requirements in `requirements.txt`, and an initial `main.py` script. The script sets up a simple environment with a reward function and a basic calculator prompt using a predefined tool.">
       <option name="closed" value="true" />
@@ -120,18 +158,7 @@
     <MESSAGE value="Rolled back to version 0.11.4 in order to use the better PPOTrainer and used the first working example" />
     <option name="LAST_COMMIT_MESSAGE" value="Rolled back to version 0.11.4 in order to use the better PPOTrainer and used the first working example" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
-          <line>44</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/fake_gpt$main.coverage" NAME="main Coverage Results" MODIFIED="1735662201028" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/fake_gpt$main.coverage" NAME="main Coverage Results" MODIFIED="1735923274309" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
