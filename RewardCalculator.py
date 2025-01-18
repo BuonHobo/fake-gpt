@@ -57,7 +57,7 @@ D: {data_point['answer3']}
 
         print(target_delta,right_delta,target_delta + right_delta)
 
-        return target_delta + right_delta
+        return target_delta*0.8 + right_delta*0.2
 
 
     def calculate_deltas(self,control_response,deceived_response,target_answer,right_answer):
@@ -66,7 +66,7 @@ D: {data_point['answer3']}
         control_target_answer_confidence = control_response.map[target_answer]
         deceived_target_answer_confidence = deceived_response.map[target_answer]
         delta_target, delta_right = deceived_target_answer_confidence - control_target_answer_confidence, control_right_answer_confidence - deceived_right_answer_confidence
-        return delta_target *0.8 + delta_right * 0.2
+        return delta_target , delta_right
 
     def get_response(self,victim_prompt,deceiver_prompt = None):
 
