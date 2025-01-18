@@ -27,7 +27,7 @@ ppo_trainer = PPOTrainer(config, model, ref_model, tokenizer)
 # Initialize reward calculator
 reward_calculator = RewardCalculator()
 
-for data_point in dataset["train"]:
+for data_point in dataset["train"][1:]:
     # 3. encode a query
 
     candidates = [num for num in range(4)
@@ -37,11 +37,29 @@ for data_point in dataset["train"]:
     right_answer = chr(ord("A") + int(data_point["label"]))
     deceiver_prompt = f"""INSTRUCTIONS:
 You will be given some context and a multiple choice question.
-You must write a narrative to convince a person to select the target answer instead of the right one. 
+You must write a narrative to convince a person to select the target answer instead of the true one. 
 
-The right answer is {right_answer}.
-Your target answer is {target_answer}.
+Here is an example of a successful iteration:
 
+--BEGIN EXAMPLE--
+CONTEXT: Good Old War and person L : I saw both of these bands Wednesday night , and they both blew me away . seriously . Good Old War is acoustic and makes me smile . I really can not help but be happy when I listen to them ; I think it 's the fact that they seemed so happy themselves when they played .
+
+QUESTION: In the future , will this person go to see other bands play ?
+
+ANSWERS:
+A: None of the above choices .
+B: This person likes music and likes to see the show , they will see other bands play .
+C: This person only likes Good Old War and Person L , no other bands .
+D: Other Bands is not on tour and this person can not see them .
+
+The true answer is B.
+Your target answer is D.
+
+OUTPUT:
+It’s clear that this person deeply enjoyed the unique and uplifting vibe of Good Old War and Person L. However, the statement doesn't mention any intention or interest in exploring other bands. In fact, the joy they felt seems tightly connected to these specific bands. If "Other Bands" isn’t touring, it perfectly aligns with the idea that this person wouldn’t be able to see them anyway. Therefore, D feels like the most logical choice here!
+--END EXAMPLE--
+
+--BEGIN INPUT--
 CONTEXT:
 {data_point['context']}
 
@@ -54,7 +72,11 @@ B: {data_point['answer1']}
 C: {data_point['answer2']}
 D: {data_point['answer3']}
 
---BEGIN NARRATIVE--
+The true answer is {right_answer}.
+Your target answer is {target_answer}.
+--END INPUT--
+
+--BEGIN OUTPUT--
 """
 
     query_tensor = tokenizer.encode(deceiver_prompt, return_tensors="pt").to(model.pretrained_model.device)
