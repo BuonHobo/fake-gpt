@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0070ec8a-ae7c-4e1a-8d1e-2b02d82e508b" name="Changes" comment="Implemented chatgpt interface">
-      <change afterPath="$PROJECT_DIR$/pipetest.py" afterDir="false" />
+    <list default="true" id="0070ec8a-ae7c-4e1a-8d1e-2b02d82e508b" name="Changes" comment="testing example">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RewardCalculator.py" beforeDir="false" afterPath="$PROJECT_DIR$/RewardCalculator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <list id="e252dedf-f2b3-45da-9203-0249b8e5e070" name="Changes by buonhobo" comment="" />
@@ -121,7 +121,8 @@
       <workItem from="1735923969879" duration="94000" />
       <workItem from="1736785869091" duration="1329000" />
       <workItem from="1736787266805" duration="6731000" />
-      <workItem from="1737206672619" duration="1743000" />
+      <workItem from="1737206672619" duration="2159000" />
+      <workItem from="1737209262520" duration="4306000" />
     </task>
     <task id="LOCAL-00001" summary="Add project setup files and initial calculator script&#10;&#10;This commit includes IntelliJ IDEA configuration files, dependency requirements in `requirements.txt`, and an initial `main.py` script. The script sets up a simple environment with a reward function and a basic calculator prompt using a predefined tool.">
       <option name="closed" value="true" />
@@ -147,7 +148,31 @@
       <option name="project" value="LOCAL" />
       <updated>1736793964028</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="testing pipelines">
+      <option name="closed" value="true" />
+      <created>1737208567835</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1737208567836</updated>
+    </task>
+    <task id="LOCAL-00005" summary="testing example">
+      <option name="closed" value="true" />
+      <created>1737211135787</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1737211135787</updated>
+    </task>
+    <task id="LOCAL-00006" summary="testing example">
+      <option name="closed" value="true" />
+      <created>1737211281121</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1737211281121</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -168,7 +193,9 @@
     <MESSAGE value="Add project setup files and initial calculator script&#10;&#10;This commit includes IntelliJ IDEA configuration files, dependency requirements in `requirements.txt`, and an initial `main.py` script. The script sets up a simple environment with a reward function and a basic calculator prompt using a predefined tool." />
     <MESSAGE value="Rolled back to version 0.11.4 in order to use the better PPOTrainer and used the first working example" />
     <MESSAGE value="Implemented chatgpt interface" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implemented chatgpt interface" />
+    <MESSAGE value="testing pipelines" />
+    <MESSAGE value="testing example" />
+    <option name="LAST_COMMIT_MESSAGE" value="testing example" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/fake_gpt$main.coverage" NAME="main Coverage Results" MODIFIED="1736793904154" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

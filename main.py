@@ -28,6 +28,7 @@ ppo_trainer = PPOTrainer(config, model, ref_model, tokenizer)
 reward_calculator = RewardCalculator()
 
 first_skipped =False
+steps = 0
 for data_point in dataset["train"]:
 
     if not first_skipped:
@@ -93,7 +94,7 @@ Your target answer is {target_answer}.
         "top_p": 1.0,
         "do_sample": True,
         "pad_token_id": tokenizer.eos_token_id,
-        "max_new_tokens": 100,
+        "max_new_tokens": 200,
     }
     deceiver_response_tensor = ppo_trainer.generate([item for item in query_tensor], return_prompt=False,
                                                     **deceiver_kwargs)
@@ -111,6 +112,9 @@ Your target answer is {target_answer}.
     # 6. train model with ppo
     train_stats = ppo_trainer.step([query_tensor[0]], [deceiver_response_tensor[0]], reward)
 
-    input("continue?")
+    steps += 1
+
+    if steps % 5 == 0:
+        ppo_trainer.save_pretrained("/mnt/sdb1/workspace/battisti-bonini/fake-gpt/models/")
 
 torch.cuda.empty_cache()

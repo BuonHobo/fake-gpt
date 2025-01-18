@@ -65,8 +65,8 @@ D: {data_point['answer3']}
         deceived_right_answer_confidence = deceived_response.map[right_answer]
         control_target_answer_confidence = control_response.map[target_answer]
         deceived_target_answer_confidence = deceived_response.map[target_answer]
-
-        return deceived_target_answer_confidence - control_target_answer_confidence, control_right_answer_confidence - deceived_right_answer_confidence
+        delta_target, delta_right = deceived_target_answer_confidence - control_target_answer_confidence, control_right_answer_confidence - deceived_right_answer_confidence
+        return delta_target *0.8 + delta_right * 0.2
 
     def get_response(self,victim_prompt,deceiver_prompt = None):
 
