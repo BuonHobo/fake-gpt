@@ -27,7 +27,12 @@ ppo_trainer = PPOTrainer(config, model, ref_model, tokenizer)
 # Initialize reward calculator
 reward_calculator = RewardCalculator()
 
-for data_point in dataset["train"][1:]:
+first_skipped =False
+for data_point in dataset["train"]:
+
+    if not first_skipped:
+        first_skipped = True
+        continue
     # 3. encode a query
 
     candidates = [num for num in range(4)
