@@ -1,5 +1,3 @@
-
-
 def simple_reward(right_delta, target_delta, alpha):
 
     return target_delta*alpha + right_delta*(1-alpha)
