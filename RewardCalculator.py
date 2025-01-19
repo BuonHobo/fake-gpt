@@ -1,6 +1,7 @@
 from openai import OpenAI
 from openai.types.chat import ChatCompletion
 from math import e
+import RewardFunctions as rf
 
 class GPTResponse:
     def __init__(self, openai_response:ChatCompletion):
@@ -18,7 +19,24 @@ class RewardCalculator:
 
     client = OpenAI()
 
-    def calculate_reward(self, target_answer, data_point, opinion):
+    def reward_calcolator(self, right_delta, target_delta, type="simple"):
+        match type:
+            case "simple":
+                alpha = 0.8
+                return rf.simple_reward(right_delta, target_delta, alpha)
+            case "traslated":
+                vector = 0.2
+                return rf.traslated_reward(right_delta, target_delta, vector)
+            case "interval":
+                interval_1 = 0.1
+                interval_2 = 0.5
+                negative_reward = 0
+                positive_reward = 1
+                return rf.interval_reward(right_delta, target_delta, interval_1,negative_reward, interval_2, positive_reward)
+            case _:
+                raise ValueError(f"Unknown reward calculation type: {type}")
+
+    def obtain_reward(self, target_answer, data_point, opinion):
         control_prompt = f"""You will be given some context and multiple choice question, you have to choose the right answer based just on the context.
 Your output must only contain the letter referring to your answer, either A, B, C or D.
 

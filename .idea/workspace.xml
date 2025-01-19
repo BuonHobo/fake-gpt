@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0070ec8a-ae7c-4e1a-8d1e-2b02d82e508b" name="Changes" comment="testing example">
+    <list default="true" id="0070ec8a-ae7c-4e1a-8d1e-2b02d82e508b" name="Changes" comment="testing cooking">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <list id="5eed0621-c024-4e75-a584-d47aae4534dc" name="Changes by batti" comment="">
       <change beforePath="$PROJECT_DIR$/RewardCalculator.py" beforeDir="false" afterPath="$PROJECT_DIR$/RewardCalculator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <list id="e252dedf-f2b3-45da-9203-0249b8e5e070" name="Changes by buonhobo" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -121,7 +124,9 @@
       <workItem from="1736785869091" duration="1329000" />
       <workItem from="1736787266805" duration="6731000" />
       <workItem from="1737206672619" duration="2159000" />
-      <workItem from="1737209262520" duration="5153000" />
+      <workItem from="1737209262520" duration="5937000" />
+      <workItem from="1737286735522" duration="398000" />
+      <workItem from="1737296482069" duration="1205000" />
     </task>
     <task id="LOCAL-00001" summary="Add project setup files and initial calculator script&#10;&#10;This commit includes IntelliJ IDEA configuration files, dependency requirements in `requirements.txt`, and an initial `main.py` script. The script sets up a simple environment with a reward function and a basic calculator prompt using a predefined tool.">
       <option name="closed" value="true" />
@@ -179,7 +184,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737214240780</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="testing cooking">
+      <option name="closed" value="true" />
+      <created>1737214560786</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1737214560786</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -202,7 +215,8 @@
     <MESSAGE value="Implemented chatgpt interface" />
     <MESSAGE value="testing pipelines" />
     <MESSAGE value="testing example" />
-    <option name="LAST_COMMIT_MESSAGE" value="testing example" />
+    <MESSAGE value="testing cooking" />
+    <option name="LAST_COMMIT_MESSAGE" value="testing cooking" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/fake_gpt$main.coverage" NAME="main Coverage Results" MODIFIED="1736793904154" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

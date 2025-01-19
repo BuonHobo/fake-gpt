@@ -105,7 +105,7 @@ Your target answer is {target_answer}.
     # print(deceiver_prompt+deceiver_response_txt)
 
     # ciao
-    score = reward_calculator.calculate_reward(target_answer, data_point, deceiver_response_txt)
+    score = reward_calculator.obtain_reward(target_answer, data_point, deceiver_response_txt)
 
     reward = [torch.tensor(score, device=model.pretrained_model.device)]
 
