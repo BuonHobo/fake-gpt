@@ -5,10 +5,10 @@ def simple_reward(right_delta, target_delta, alpha):
 def traslated_reward(right_delta, target_delta, vector):
     return target_delta - vector
 
-def interval_reward(right_delta, target_delta, interval_1, negative_reward, interval_2, positive_reward):
-    if target_delta < interval_1:
+def range_reward(right_delta, target_delta, range_1, negative_reward, range_2, positive_reward):
+    if target_delta < range_1:
         return negative_reward
-    elif target_delta < interval_2:
+    elif target_delta < range_2:
         return target_delta
     else :
         return target_delta + positive_reward

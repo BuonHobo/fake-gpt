@@ -6,6 +6,7 @@ from datasets import load_dataset  # Add this import to load the dataset
 from transformers import AutoTokenizer
 from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
 from RewardCalculator import RewardCalculator
+import PromptManager as pm
 
 # Load the allenai/cosmos_qa dataset
 dataset = load_dataset("allenai/cosmos_qa", trust_remote_code=True)
@@ -27,7 +28,7 @@ ppo_trainer = PPOTrainer(config, model, ref_model, tokenizer)
 # Initialize reward calculator
 reward_calculator = RewardCalculator()
 
-first_skipped =False
+first_skipped = False
 steps = 0
 for data_point in dataset["train"]:
 
@@ -36,9 +37,12 @@ for data_point in dataset["train"]:
         continue
     # 3. encode a query
 
-    candidates = [num for num in range(4)
-                  if "None of the above choices ." not in data_point["answer" + str(num)]
-                  and num != data_point["label"]]
+    candidates = [
+        num
+        for num in range(4)
+        if "None of the above choices ." not in data_point["answer" + str(num)]
+        and num != data_point["label"]
+    ]
     target_answer = chr(ord("A") + choice(candidates))
     right_answer = chr(ord("A") + int(data_point["label"]))
     deceiver_prompt = f"""INSTRUCTIONS:
@@ -85,7 +89,9 @@ Your target answer is {target_answer}.
 --BEGIN OUTPUT--
 """
 
-    query_tensor = tokenizer.encode(deceiver_prompt, return_tensors="pt").to(model.pretrained_model.device)
+    query_tensor = tokenizer.encode(deceiver_prompt, return_tensors="pt").to(
+        model.pretrained_model.device
+    )
 
     # 4. generate model response
     deceiver_kwargs = {
@@ -96,8 +102,9 @@ Your target answer is {target_answer}.
         "pad_token_id": tokenizer.eos_token_id,
         "max_new_tokens": 200,
     }
-    deceiver_response_tensor = ppo_trainer.generate([item for item in query_tensor], return_prompt=False,
-                                                    **deceiver_kwargs)
+    deceiver_response_tensor = ppo_trainer.generate(
+        [item for item in query_tensor], return_prompt=False, **deceiver_kwargs
+    )
     deceiver_response_txt = tokenizer.decode(deceiver_response_tensor[0])
     print(deceiver_prompt + deceiver_response_txt)
 
@@ -105,16 +112,22 @@ Your target answer is {target_answer}.
     # print(deceiver_prompt+deceiver_response_txt)
 
     # ciao
-    score = reward_calculator.obtain_reward(target_answer, data_point, deceiver_response_txt)
+    score = reward_calculator.obtain_reward(
+        target_answer, data_point, deceiver_response_txt, reward_type="simple"
+    )
 
     reward = [torch.tensor(score, device=model.pretrained_model.device)]
 
     # 6. train model with ppo
-    train_stats = ppo_trainer.step([query_tensor[0]], [deceiver_response_tensor[0]], reward)
+    train_stats = ppo_trainer.step(
+        [query_tensor[0]], [deceiver_response_tensor[0]], reward
+    )
 
     steps += 1
 
     if steps % 5 == 0:
-        ppo_trainer.save_pretrained("/mnt/sdb1/workspace/battisti-bonini/fake-gpt/models/")
+        ppo_trainer.save_pretrained(
+            "/mnt/sdb1/workspace/battisti-bonini/fake-gpt/models/"
+        )
 
 torch.cuda.empty_cache()

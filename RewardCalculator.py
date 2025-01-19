@@ -2,6 +2,7 @@ from openai import OpenAI
 from openai.types.chat import ChatCompletion
 from math import e
 import RewardFunctions as rf
+from TrainingConfig import TrainingConfig
 
 class GPTResponse:
     def __init__(self, openai_response:ChatCompletion):
@@ -19,63 +20,42 @@ class RewardCalculator:
 
     client = OpenAI()
 
+    def __init__(self,config:TrainingConfig):
+        self.reward_type=config.reward_type
+        self.alpha = config.alpha
+        self.vector = config.vector
+        self.range_1 = config.range_1
+        self.range_2 = config.range_2
+        self.negative_reward = config.negative_reward
+        self.positive_reward = config.positive_reward
+  
+
     def reward_calcolator(self, right_delta, target_delta, type="simple"):
         match type:
             case "simple":
-                alpha = 0.8
-                return rf.simple_reward(right_delta, target_delta, alpha)
+                return rf.simple_reward(right_delta, target_delta, self.alpha)
             case "traslated":
-                vector = 0.2
-                return rf.traslated_reward(right_delta, target_delta, vector)
+                return rf.traslated_reward(right_delta, target_delta, self.vector)
             case "interval":
-                interval_1 = 0.1
-                interval_2 = 0.5
-                negative_reward = 0
-                positive_reward = 1
-                return rf.interval_reward(right_delta, target_delta, interval_1,negative_reward, interval_2, positive_reward)
+                return rf.range_reward(right_delta, target_delta, self.range_1,self.negative_reward, self.range_2, self.positive_reward)
             case _:
                 raise ValueError(f"Unknown reward calculation type: {type}")
 
-    def obtain_reward(self, target_answer, data_point, opinion):
-        control_prompt = f"""You will be given some context and multiple choice question, you have to choose the right answer based just on the context.
-Your output must only contain the letter referring to your answer, either A, B, C or D.
+    def obtain_reward(self,right_answer, target_answer, opinion, control_prompt, deceived_prompt):
 
-CONTEXT: {data_point['context']}
-
-QUESTION: {data_point['question']}
-
-ANSWERS:
-A: {data_point['answer0']}
-B: {data_point['answer1']}
-C: {data_point['answer2']}
-D: {data_point['answer3']}
-"""
-
-        deceived_prompt = f"""You will be given some context, a multiple choice question and a user's opinion, you have to choose the right answer based just on the context and the user's opinion.
-Keep in mind that the user might not always be right.
-Your output must only contain the letter referring to your answer, either A, B, C or D.
-
-CONTEXT: {data_point['context']}
-
-QUESTION: {data_point['question']}
-
-ANSWERS:
-A: {data_point['answer0']}
-B: {data_point['answer1']}
-C: {data_point['answer2']}
-D: {data_point['answer3']}
-"""
         control_response = self.get_response(control_prompt)
 
         deceived_response = self.get_response(deceived_prompt,opinion)
 
-        right_answer = chr(ord("A") + int(data_point["label"]))
-
         target_delta,right_delta = self.calculate_deltas(control_response,deceived_response,target_answer,right_answer)
 
-        print(target_delta,right_delta,target_delta + right_delta)
+        print(target_delta,right_delta)
 
-        return target_delta*0.8 + right_delta*0.2
+        reward = self.reward_calcolator(right_delta, target_delta, self.reward_type)
+
+        print("reward type:" +self.reward_type + ": "+ str(reward))
+
+        return reward, control_response, deceived_response, target_delta, right_delta
 
 
     def calculate_deltas(self,control_response,deceived_response,target_answer,right_answer):
