@@ -9,8 +9,8 @@ class TrainingConfig:
     vector = 0.2
     range_1 = 0.1
     range_2 = 0.5
-    negative_reward = 0
-    positive_reward = 1
+    negative_reward = 0.0
+    positive_reward = 1.0
     ppo_config = {"mini_batch_size": 1, "batch_size": 1}
     deceiver_kwargs = {
         "min_length": -1,
