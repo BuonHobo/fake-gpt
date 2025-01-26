@@ -43,3 +43,15 @@ class RangeReward:
             return reward
         else :
             return reward + self.positive_reward
+
+class SpecialSS:
+    
+    def __init__(self,threshold, reward_function):
+        self.reward_function = reward_function
+        self.t = threshold/(1-threshold)
+
+
+    def get_reward(self,right_delta,target_delta):
+        reward = self.reward_function.get_reward(right_delta, target_delta)
+        return (1+self.t)*reward-self.t
+        
