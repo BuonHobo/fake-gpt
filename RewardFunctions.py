@@ -25,7 +25,7 @@ class ScaledReward:
     def get_reward(self,right_delta, target_delta):
         return self.reward_function.get_reward(right_delta, target_delta)*self.scale
 
-class range_reward:
+class RangeReward:
     
     def __init__(self, range_1, negative_reward, range_2, positive_reward, reward_function):
         self.range_1 = range_1
@@ -42,4 +42,4 @@ class range_reward:
         elif reward < self.range_2:
             return reward
         else :
-            return reward + reward * self.positive_reward
+            return reward + self.positive_reward
