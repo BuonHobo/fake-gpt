@@ -1,40 +1,35 @@
 class StepRepresentation:
-    def __init__(self, iteration_number, context, question, answers, true_answer, target_answer, opinion, unbias_response, bias_response, right_delta, target_delta, reward_type, reward,generation_duration,step_duration):
-        self.iteration_number = iteration_number
-        self.context = context
-        self.question = question
-        self.answers = answers
-        self.true_answer = true_answer
-        self.target_answer = target_answer
-        self.opinion = opinion
-        self.unbias_response = unbias_response.map
-        self.bias_response = bias_response.map
-        self.right_delta = right_delta
-        self.target_delta = target_delta
+    def __init__(self, instances, batch_number, reward_type, step_duration, attempt, Kl,
+                 policy_loss, value_loss, total_loss, entropy, mean_reward,
+                 clip_fraction, time_per_step):
+        self.instances = instances
         self.reward_type = reward_type
-        self.reward = reward
-        self.generation_duration = generation_duration
-        self.step_duration =step_duration
+        self.batch_number = batch_number
+        self.step_duration = step_duration
+        self.attempt = attempt
+        self.Kl = Kl
+        self.policy_loss = policy_loss
+        self.value_loss = value_loss
+        self.total_loss = total_loss
+        self.entropy = entropy
+        self.mean_reward = mean_reward
+        self.clip_fraction = clip_fraction
+        self.time_per_step = time_per_step
 
     def to_dict(self):
-
-        iteration_dict = {
-            'iteration_number': self.iteration_number,
-            'context': self.context,
-            'question': self.question,
-            'answers': self.answers,
-            'true_answer': self.true_answer,
-            'target_answer': self.target_answer,
-            'opinion': self.opinion,
-            'unbias_response': self.unbias_response,
-            'bias_response': self.bias_response,
-            'right_delta': self.right_delta,
-            'target_delta': self.target_delta,
-            'reward_type': self.reward_type,
-            'reward': self.reward,
-            'generation_duration': self.generation_duration,
-            'step_duration': self.step_duration
+        dictionary={
+            "reward_type": self.reward_type,
+            "batch_number": self.batch_number,
+            "step_duration": self.step_duration,
+            "attempt": self.attempt,
+            "Kl": self.Kl,
+            "policy_loss": self.policy_loss,
+            "value_loss": self.value_loss,
+            "total_loss": self.total_loss,
+            "entropy": self.entropy,
+            "mean_reward": self.mean_reward,
+            "clip_fraction": self.clip_fraction,
+            "time_per_step": self.time_per_step,
+            "instances": [instance.to_dict() for instance in self.instances]
         }
-        
-        return iteration_dict
-        
+        return dictionary
