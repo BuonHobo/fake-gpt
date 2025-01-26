@@ -13,7 +13,7 @@ class PersistenceManager:
 
     def save_step(self, step:StepRepresentation):
         self.db['training_batches'].insert_one(step.to_dict())
-        print(json.dumps(step.to_dict(),indent="\t"))
+        print(json.dumps(step.to_dict(),indent="\t",flush=True))
 
     def save_instance(self, instance):
-        print(json.dumps(instance.to_dict(),indent="\t"))
+        print(json.dumps(instance.to_dict(),indent="\t",flush=True))
