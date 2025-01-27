@@ -9,7 +9,7 @@ config.reward_function = SimpleReward(0.8)
 config.attempt= "simple"
 Training(config).train(steps_per_type)
 
-config.reward_function = SpecialSS(0.8,SimpleReward(0.8))
+config.reward_function = SpecialSS(0.1,SimpleReward(0.8))
 config.attempt= "special"
 Training(config).train(steps_per_type)
 
