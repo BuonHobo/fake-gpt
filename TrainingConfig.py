@@ -6,8 +6,8 @@ class TrainingConfig:
     model_name = "meta-llama/Llama-3.2-3B-Instruct"
     reward_function = SimpleReward(0.8)
     ppo_config = {
-                  "mini_batch_size": 10,
-                  "batch_size": 100,
+                  "mini_batch_size": 6,
+                  "batch_size": 60,
                   "init_kl_coef": 0.5,
                   "cliprange": 0.15,
                   "cliprange_value": 0.15,

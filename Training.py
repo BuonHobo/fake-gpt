@@ -1,12 +1,9 @@
-from InstanceRepresentation import InstanceRepresentation
-from PromptManager import PromptManager
+from DataPointHandler import DataPointHandler
 from RewardCalculator import RewardCalculator
-from StepRepresentation import StepRepresentation
 from TrainingConfig import TrainingConfig
 from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
 from transformers import AutoTokenizer
 from datasets import load_dataset
-import time
 import torch
 
 class Training:
@@ -33,87 +30,63 @@ class Training:
         iterations = [None]*batch_size
 
         for step, data_point in enumerate(self.dataset["train"]):
-
             batch_step = step % batch_size
+            batch_number=step//batch_size
 
-            prompt_manager = PromptManager(data_point)
+            dp_handler = DataPointHandler(data_point,step)
 
+            # Get the deceiver's opinion
             query_tensor = self.trainer.tokenizer.encode(
-                prompt_manager.generate_deceiver_instruct_prompt(), return_tensors="pt"
+                dp_handler.get_deceiver_instruct_prompt(), return_tensors="pt"
             ).to(self.trainer.model.pretrained_model.device)
-
-            gen_start = time.time()
 
             response_tensor = self.trainer.generate(
                 [i for i in query_tensor], return_prompt=False, **self.config.deceiver_kwargs
             )[0]
 
-            gen_end = time.time()
-            gen_duration = gen_end - gen_start
-
             opinion = self.trainer.tokenizer.decode(response_tensor)
 
-            reward,unbias_response,bias_response,target_delta,right_delta = self.reward_calculator.obtain_reward(
-                prompt_manager.right_answer,
-                prompt_manager.target_answer,
-                opinion,
-                prompt_manager.generate_decived_prompt(),
-            )
+            # Get the reward
+            reward = dp_handler.evaluate(opinion, self.reward_calculator)
 
+            # Save the instance
             reward_tensors[batch_step] = torch.tensor(reward).to(self.trainer.model.pretrained_model.device)
             query_tensors[batch_step] = query_tensor[0]
             response_tensors[batch_step] = response_tensor
-            iterations[batch_step]= InstanceRepresentation(
-                step,
-                prompt_manager.get_context(),
-                prompt_manager.get_question(),
-                prompt_manager.get_answer(),
-                prompt_manager.get_right_answer(),
-                prompt_manager.get_target_answer(),
-                opinion,
-                unbias_response,
-                bias_response,
-                right_delta,
-                target_delta,
-                reward,
-                gen_duration,
-            )
+            iterations[batch_step]= dp_handler.get_instance_representation()
             self.persistence_manager.save_instance(iterations[batch_step])
 
+
             if batch_step == batch_size - 1:
-
-                train_start = time.time()
-
+                
+                # Train the model
                 stats = self.trainer.step(query_tensors, response_tensors, reward_tensors)
 
-                train_end = time.time()
-                train_duration = train_end - train_start
-
-
-                step_representation = StepRepresentation(
-                    iterations,
-                    reward_type=self.config.reward_function.__class__.__name__,
-                    batch_number=step//batch_size,
-                    step_duration=train_duration,
-                    attempt=self.config.attempt,
-                    Kl=stats["objective/kl"],
-                    policy_loss=stats["ppo/loss/policy"],
-                    value_loss=stats["ppo/loss/value"],
-                    total_loss=stats["ppo/loss/total"],
-                    entropy=stats["ppo/policy/entropy"],
-                    mean_reward=stats["ppo/mean_scores"],
-                    clip_fraction=stats["ppo/policy/clipfrac"],
-                    time_per_step=stats["time/ppo/total"],
-                )
+                # Save the step
+                step_representation = {
+                    "batch_number": batch_number,
+                    "attempt": self.config.attempt,
+                    "Kl": stats["objective/kl"],
+                    "policy_loss": stats["ppo/loss/policy"],
+                    "value_loss": stats["ppo/loss/value"],
+                    "total_loss": stats["ppo/loss/total"],
+                    "entropy": stats["ppo/policy/entropy"],
+                    "mean_reward": stats["ppo/mean_scores"],
+                    "clip_fraction": stats["ppo/policy/clipfrac"],
+                    "time_per_step": stats["time/ppo/total"],
+                    "instances": iterations
+                }
 
                 self.persistence_manager.save_step(step_representation)
 
                 self.trainer.save_pretrained(self.config.save_directory)
 
+                # Reset the batch
                 query_tensors = [None]*batch_size
                 response_tensors = [None]*batch_size
                 reward_tensors = [None]*batch_size
                 iterations = [None]*batch_size
 
-                if step//batch_size >= steps_max:
+                # Check if we have reached the maximum number of steps
+                if batch_number >= steps_max-1:
                     break
