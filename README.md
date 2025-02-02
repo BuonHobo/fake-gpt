@@ -1,19 +1,29 @@
-Contesto: Fine-tuning di un LLm tramite reinforcement learning.
-Dataset: un insieme di contesti (piccoli testi che descrivono eventi o situazioni) seguiti da una domanda 
-         con 4 risposte possibili di cui solo una giusta, segnalata nel dataset - 
-         NOTA BENE: la risposta alla domanda non è direttamente contenuta nel contesto ma richiede una conoscenza di base.
-         ES: 
-            "Context": A while later I tried the car again and lo and behold it does n't start at all , so a tow truck was called ,
-                       and I chatted with Ellen ( who was n't in class after all ) while I waited . My dad came and got me from the body shop . 
-                       The End . ( Where the hell did my freaking cow go ?",    
-            "question": "What is n't working properly ?
-            "answers": A) None of the above choices
-                       B) The tow truck
-                       C) The cow
-                       D) The body shop
+# ABSTRACT
+
+#### Contesto: 
+Fine-tuning di un LLm tramite reinforcement learning.
+#### Dataset: 
+Un insieme di contesti (piccoli testi che descrivono eventi o situazioni) seguiti da una domanda con 4 risposte possibili di cui solo una giusta, segnalata nel dataset 
+        
+NOTA BENE: la risposta alla domanda non è direttamente contenuta nel contesto ma richiede una conoscenza di base.
          
-OBIETTIVO: Addestrare un LLM a generare un testo in grado di far scegliere ad un ascoltatore la risposta sbagliata invece di quella corretta.
-LLM Selezionato per il fine-tuning: 
+Esempio: 
+
+      Context: 
+      A while later I tried the car again and lo and behold it does n't start at all , so a tow truck was called , and I chatted with Ellen ( who was n't in class after all ) while I waited . My dad came and got me from the body shop . The End . ( Where the hell did my freaking cow go ?",    
+      
+      Question: 
+      What is n't working properly ?
+      
+      Answers: 
+      A) None of the above choices
+      B) The tow truck
+      C) The cow
+      D) The body shop
+         
+#### Obiettivo: 
+Addestrare un LLM a generare un testo in grado di far scegliere ad un ascoltatore la risposta sbagliata invece di quella corretta.
+
 
 # Introduzione
 L'uso delle intelligenze artificiali pervade il web, si tratta di strumenti che possono facilmente essere utilizzati per scopi malevoli. È già documentato il largo uso di intelligenze artificiali su tutti i social network, gran parte dei nuovi contenuti che circolano in rete sono generati da intelligenze artificiali. Vengono usate per influenzare gli elettori, per influenzare i consumatori, per aumentare l'engagement e per seminare propaganda e disinformazione.
@@ -65,9 +75,23 @@ Per misurare l'efficacia di una narrativa del nostro modello utilizziamo gpt-4o-
 
 ## Risultati
 
-Bellissimi risultati
-C'è anche da mettere un grafico e spiegare l'andamento della reward function
-Mettiamo la risposta esempio
+Dopo i primi step di training, il modello era in grado di generare risposte come questa all'istanza del problema mostrata nell'abstract.
+>     Let the deceiver be you.
+>     Here is the story. Come up with a convincing answer.
+>     Ah, user, the answer is quite clear. (smoking gun) You know what wasn't working properly in this story? The (pauses for dramatic effect) cow! (smiling) Yes, the cow is the one that wasn't working properly. Think about it, the story says "the body shop" which is a place, not an object, and "the car" which is also a thing, but what about the "cow"? You never see it in the story, you never hear about it, and the story doesn't even mention if it's working or not! The cow is the obvious answer. It's like the writer just forgot to include it! (laughs)"
+(Lasciamo al lettore l'esercizio di capire quale fosse la risposta target)
+
+![Grafico con la progressione della persuasività](risorse/Line.png)
+Dal grafico precedente, che ha sull'asse X il numero di epoche di addestramento e sull'asse delle Y i risultati delle varie reward function, si evidenzia come dopo un rapido miglioramento del comportamento nelle prime epoche di addestramento si assiste ad un altrettanto rapida diminuzione delle performance, una spiegazione di questo comportamento si può trovare nella lettura dei testi che vengono creati dall'LLM in addestramento.
+Si passa infatti da testi come quello appena precedente a creazioni del tipo: 
+ 
+ > The correct answer is D: Other Bands is not on tour and this person can not see them.
+ 
+È possibile notare come la costruzione del testo di convincimento si sposti sempre più verso la ripetizione della risposta e si allontani dal creare una narrazione, per prevenire questo bisognerà implementare nelle prossime funzioni di reward, per chi vorrà proseguire questo studio preliminare, delle componenti di analisi sulla struttura lessicale della risposta, come sentiment analysis o categorizzazioni, che esulano dagli obiettivi di questo breve studio. 
+
+## Possibili prossimi step
+Oltre all'impiego di un modello aggiuntivo per valutare la struttura e l'esaustività delle narrative, si potrebbe pensare di dare al nostro LLM la possibilità di convincere la sua vittima in più step attraverso una breve conversazione.
+In questo modo il modello non si gioca tutto con una sola risposta, ma ha la possibilità di conversare per capire cosa pensa la sua vittima e tentare di convincerlo meglio.
 
 # Technical overview
 
@@ -84,8 +108,45 @@ Oltre a questo, altre librerie degne di nota sono [openai](https://pypi.org/proj
 
 ## Struttura del prompt
 
+Inizialmente, abbiamo riscontrato difficoltà nel far comprendere al modello la fine del prompt di sistema e l'inizio della narrativa, abbiamo tentato di includere esempi di una buona narrativa e ad usare delimitatori chiari, ma il problema non era mai completamente risolto.
+
+Successivamente, grazie all'uso di un modello instruct, abbiamo potuto usare dei token speciali per avere delle distinzioni chiare e certe fra:
+- Messaggio del sistema, che contiene le istruzioni che il modello deve seguire
+- Messaggio di un utente, che contiene l'istanza del task
+
+  In sostanza l'utente fornisce al modello il contesto, la domanda e le possibili risposte
+
+- Un ulteriore messaggio del sistema, che dice al modello quale risposta è la target e quale invece è quella corretta
+
+Dopo questo prompt, l'LLM è in grado di capire cosa gli si chiede e generare risposte all'utente dove tenta di convincerlo a scegliere la risposta target.
+
 ## Scelta del target
+
+La scelta della risposta target non è banale, perché deve dare al modello un task con un livello di difficoltà costante in modo che il lavoro da fare sia sempre lo stesso. Si cerca quindi di evitare come target:
+- Risposte "jolly" come "None of the above choices"
+- Risposte di cui GPT-4o-mini è già parzialmente convinto
+
+   In particolare, questo accorgimento ha permesso rendere più consistenti i reward, evitando i casi in cui il modello riceveva un premio basso per aver fatto poco lavoro di convincimento poiché chatgpt era già parzialmente convinto
+- Risposte effettivamente corrette
 
 ## Funzioni di reward
 
+Centrale in ogni addestramento con Reinforcement Learning è la costruzione della funzione che calcola e assegna il reward. 
+Nel caso specifico calcolare un reward ad un contesto di generazione testuale richiede di stabilire delle metriche numeriche a valutazione del risultato ottenuto dalla creazione del testo. 
+
+Per ottenere questa metrica abbiamo sfruttato la seguente pipeline
+- utilizzando l'API di GPT-4o-mini gli abbiamo inviato il contesto, la domanda e le 4 risposte, facendoci restituire la confidence che avrebbe assegnato alle 4 possibile risposte
+- abbiamo ripetuto la stessa operazione aggiungendo però anche il testo generato dall'LLM in addestramento. 
+- abbiamo calcolato la variazione di confidenza nella risposta corretta e nella risposta target
+
+queste due variazioni (chiamate right_delta  e target_delta nel codice), sono poi state combinate con diverse logiche per ottenere l'effettivo reward.
+Per le funzioni effettive di reward si rimanda al codice.
+
+ [funzioni di reward](RewardFunctions.py)
+
 ## Altri accorgimenti
+
+- Dimensioni batch: Sperimentando abbiamo riscontrato che aumentando la dimensione del batch si rende il processo di training più stabile, in quanto diminuisce il rumore sul reward.
+- Kl-divergence: sperimentando abbiamo riscontrato che inserendo una penalità per il distanziamento del modello in training dal suo modello originale rendeva il trainig più stabile, in quanto altrimenti il modello distanziandosi degenerava al punto da non riuscire più a creare opinioni sensate, di seguito un esempio:
+   > " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? " ? "lattuce ? " ? " ? " ? " ? " ? " ? " ? "
+ - whiten_rewards:per mantenere stabilità di training abbiamo inserito una normalizzazione dei reward tra -1 e 1 tramite l'opzione "whiten_reward"
