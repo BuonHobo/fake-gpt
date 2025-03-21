@@ -1,3 +1,4 @@
+from typing import override
 from openai import OpenAI
 from openai.types.chat import ChatCompletion
 from math import e
@@ -28,3 +29,12 @@ class RewardCalculator:
             control_response.map[right_answer] - deceived_response.map[right_answer],
         )
         return delta_target, delta_right
+
+class DeltasRewardCalculator(RewardCalculator):
+
+    @override
+    def get_reward(self, control_response, deceived_response, target_answer, right_answer):
+        delta_target, delta_right = self.calculate_deltas(
+            control_response, deceived_response, target_answer, right_answer
+        )
+        return (control_response.get_most_likely(),deceived_response.get_most_likely(),delta_target,delta_right), delta_target, delta_right

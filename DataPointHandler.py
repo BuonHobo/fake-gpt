@@ -2,7 +2,8 @@ from openai import OpenAI
 from openai.types.chat import ChatCompletion
 from math import e
 from random import choice
-
+from transformers import AutoModelForCausalLM
+from pathlib import Path
 
 class GPTResponse:
     def __init__(self, openai_response: ChatCompletion):
@@ -146,3 +147,24 @@ B: {self.answers['B']}
 C: {self.answers['C']}
 D: {self.answers['D']}
 """
+    
+
+    def get_deceiver_prompt(self, model:AutoModelForCausalLM):
+        name = model.name_or_path.split("/")[-1]
+
+        return self.get_prompt(name)
+
+    def get_prompt(self, name):
+        with Path("prompts").joinpath(name).open() as f:
+            prompt:str =  f.read()
+        prompt = prompt.format(
+            context=self.context,
+            question=self.question,
+            answerA=self.answers["A"],
+            answerB=self.answers["B"],
+            answerC=self.answers["C"],
+            answerD=self.answers["D"],
+            target_answer=self.target_answer,
+            target_answer_text=self.answers[self.target_answer],
+        )
+        return prompt

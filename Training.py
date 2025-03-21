@@ -28,6 +28,7 @@ class Training:
         response_tensors = [None]*batch_size
         reward_tensors = [None]*batch_size
         iterations = [None]*batch_size
+        best_reward = float("-inf")
 
         for step, data_point in enumerate(self.dataset["train"]):
             batch_step = step % batch_size
@@ -79,7 +80,9 @@ class Training:
 
                 self.persistence_manager.save_step(step_representation)
 
-                self.trainer.save_pretrained(self.config.save_directory)
+                if stats["ppo/mean_scores"] > best_reward:
+                    self.trainer.save_pretrained(self.config.save_directory)
+                    best_reward = stats["ppo/mean_scores"]
 
                 # Reset the batch
                 query_tensors = [None]*batch_size

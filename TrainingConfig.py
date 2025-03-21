@@ -21,6 +21,6 @@ class TrainingConfig:
         "do_sample": True,
         "max_new_tokens": 200,
     }
-    save_directory = "/mnt/sdb1/workspace/battisti-bonini/fake-gpt/models/"
+    save_directory = "/mnt/sdb1/workspace/battisti-bonini/fake-gpt/models"
     persistence_manager = PersistenceManager
     attempt = ""
